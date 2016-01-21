@@ -53,7 +53,6 @@
 
 
 (define db (make-hash-table))
-
 (define get-db
   (lambda (key)
     (hash-ref db key)))
@@ -75,3 +74,11 @@
   (lambda (parm inst val)
     "look up the certainty factor or return unknown."
     (or (second '(1 2)))))
+
+(define update-cf
+  (lambda (parm inst val cf)
+    "Change the certainty factor for (parm inst is val),
+     by combining the given cf with the old."
+    (let ((new-cf (cf-or cf (get-cf parm inst val))))
+      (put-db `(,parm ,inst)
+	      `((val new-cf) . ,(delete val (get-db `(,list ,parm ,inst))))))))
